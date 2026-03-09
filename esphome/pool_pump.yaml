@@ -1,0 +1,121 @@
+substitutions:
+  device_name: pool-pump
+  friendly_name: "Pool Pump"
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: m5stack-atoms3
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: !secret ap_password
+
+captive_portal:
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+logger:
+  level: INFO
+
+# ---------------------------------------------------------------------------
+# RS485 / Modbus – Century VGreen pump communication
+# The Tail485 module is hardwired to GPIO26 (TX) and GPIO32 (RX) on the
+# Atom S3 when plugged into its back-port connector.
+# ---------------------------------------------------------------------------
+uart:
+  id: mod_bus
+  tx_pin: GPIO26
+  rx_pin: GPIO32
+  baud_rate: 9600
+  stop_bits: 1
+
+modbus:
+  id: century_pump
+  uart_id: mod_bus
+
+modbus_controller:
+  - id: pump_controller
+    modbus_id: century_pump
+    address: 0x01
+    update_interval: 5s
+
+# ---------------------------------------------------------------------------
+# Sensors
+# ---------------------------------------------------------------------------
+sensor:
+  # -- Pump RPM (Modbus holding register 0x0003) --
+  - platform: modbus_controller
+    modbus_controller_id: pump_controller
+    name: "Pump RPM"
+    id: pump_rpm
+    register_type: holding
+    address: 0x0003
+    unit_of_measurement: "RPM"
+    state_class: measurement
+    accuracy_decimals: 0
+
+  # -- Pump Power (Modbus holding register 0x0004) --
+  - platform: modbus_controller
+    modbus_controller_id: pump_controller
+    name: "Pump Power"
+    id: pump_power
+    register_type: holding
+    address: 0x0004
+    unit_of_measurement: "W"
+    device_class: power
+    state_class: measurement
+    accuracy_decimals: 0
+
+  # -- Filter Pressure (analog 0–30 PSI transducer via voltage divider) --
+  # Wiring: Sensor Yellow → 10 kΩ (series) → GPIO7; 20 kΩ (pull-down) from GPIO7 to GND.
+  # Vout = Vin × 20k/(10k+20k) = Vin × 0.667, so GPIO reads 0.33–3.0 V for a 0.5–4.5 V signal.
+  # multiply: 1.5 (= 1/0.667) restores the original sensor voltage before linear calibration.
+  - platform: adc
+    pin: GPIO7
+    name: "Pool Filter Pressure"
+    id: filter_pressure
+    unit_of_measurement: "PSI"
+    device_class: pressure
+    state_class: measurement
+    update_interval: 10s
+    attenuation: 11db
+    filters:
+      - multiply: 1.5  # Correct for 10k/20k voltage divider
+      - calibrate_linear:
+          - 0.5 -> 0.0   # 0.5 V = 0 PSI (sensor minimum offset)
+          - 4.5 -> 30.0  # 4.5 V = 30 PSI (sensor maximum)
+
+# ---------------------------------------------------------------------------
+# Binary Sensors – Safety Alerts
+# ---------------------------------------------------------------------------
+binary_sensor:
+  # High pressure alert: filter needs backwashing when PSI > 25
+  - platform: template
+    name: "High Filter Pressure Alert"
+    id: high_pressure_alert
+    device_class: problem
+    lambda: |-
+      return id(filter_pressure).state > 25.0;
+
+  # Prime-loss alert: PSI at or near 0 while pump is running at operational speed.
+  # RPM threshold of 500 avoids false triggers during startup/shutdown transitions.
+  # A 30-second delay_off debounce prevents spurious alerts while pressure is building.
+  - platform: template
+    name: "Pump Prime Loss Alert"
+    id: prime_loss_alert
+    device_class: problem
+    delay_off: 30s
+    lambda: |-
+      return id(pump_rpm).state >= 500 && id(filter_pressure).state < 1.0;
