@@ -30,6 +30,21 @@ logger:
   level: INFO
 
 # ---------------------------------------------------------------------------
+# I2C – SSD1306 OLED display on the breadboard
+# ---------------------------------------------------------------------------
+i2c:
+  sda: GPIO5
+  scl: GPIO6
+  scan: true
+
+# ---------------------------------------------------------------------------
+# 1-Wire – DS18B20 waterproof temperature probe on the breadboard
+# ---------------------------------------------------------------------------
+one_wire:
+  - platform: gpio
+    pin: GPIO8
+
+# ---------------------------------------------------------------------------
 # RS485 / Modbus – Century VGreen pump communication
 # The Tail485 module is hardwired to GPIO26 (TX) and GPIO32 (RX) on the
 # Atom S3 when plugged into its back-port connector.
@@ -97,6 +112,21 @@ sensor:
           - 0.5 -> 0.0   # 0.5 V = 0 PSI (sensor minimum offset)
           - 4.5 -> 30.0  # 4.5 V = 30 PSI (sensor maximum)
 
+  # -- Water/Ambient Temperature (DS18B20 on GPIO8 via 1-Wire) --
+  # The DS18B20 reports in °C; the multiply + offset filters convert to °F for display.
+  # With a single probe on the bus, address auto-discovery is used. Set 'address: 0x...'
+  # (visible in ESPHome logs on first boot) when adding additional probes to the same wire.
+  - platform: dallas_temp
+    name: "Pool Equipment Temperature"
+    id: equipment_temp
+    unit_of_measurement: "°F"
+    device_class: temperature
+    state_class: measurement
+    update_interval: 30s
+    filters:
+      - multiply: 1.8   # °C → °F step 1: scale
+      - offset: 32.0    # °C → °F step 2: shift
+
 # ---------------------------------------------------------------------------
 # Binary Sensors – Safety Alerts
 # ---------------------------------------------------------------------------
@@ -111,11 +141,31 @@ binary_sensor:
 
   # Prime-loss alert: PSI at or near 0 while pump is running at operational speed.
   # RPM threshold of 500 avoids false triggers during startup/shutdown transitions.
-  # A 30-second delay_off debounce prevents spurious alerts while pressure is building.
+  # delayed_on: 30s ensures pressure has had time to build before triggering the alert.
   - platform: template
     name: "Pump Prime Loss Alert"
     id: prime_loss_alert
     device_class: problem
-    delay_off: 30s
+    filters:
+      - delayed_on: 30s
     lambda: |-
       return id(pump_rpm).state >= 500 && id(filter_pressure).state < 1.0;
+
+# ---------------------------------------------------------------------------
+# Display – SSD1306 0.96" OLED (128×64, I2C) on the breadboard
+# Shows live pump stats without needing a phone or Home Assistant dashboard.
+# ---------------------------------------------------------------------------
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    id: oled_display
+    lambda: |-
+      it.printf(0, 0,  id(font_small), "PSI: %.1f", id(filter_pressure).state);
+      it.printf(0, 20, id(font_small), "RPM: %.0f", id(pump_rpm).state);
+      it.printf(0, 40, id(font_small), "Temp: %.1f F", id(equipment_temp).state);
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_small
+    size: 14
