@@ -69,7 +69,7 @@ jobs:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           WIFI_SSID: op://pump/wifi/ssid
           WIFI_PASSWORD: op://pump/wifi/password
-          FALLBACK_AP_PASSWORD: op://pump/wifi/fallback_ap_password
+          AP_PASSWORD: op://pump/wifi/fallback_ap_password
           API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
           OTA_PASSWORD: op://pump/esphome/ota_password
 
@@ -78,7 +78,7 @@ jobs:
           cat > secrets.yaml <<EOF
           wifi_ssid: "${WIFI_SSID}"
           wifi_password: "${WIFI_PASSWORD}"
-          fallback_ap_password: "${FALLBACK_AP_PASSWORD}"
+          ap_password: "${AP_PASSWORD}"
           api_encryption_key: "${API_ENCRYPTION_KEY}"
           ota_password: "${OTA_PASSWORD}"
           EOF
@@ -97,7 +97,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - devices/pump-controller.yaml
+          - esphome/pool_pump.yaml
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -118,7 +118,7 @@ jobs:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           WIFI_SSID: op://pump/wifi/ssid
           WIFI_PASSWORD: op://pump/wifi/password
-          FALLBACK_AP_PASSWORD: op://pump/wifi/fallback_ap_password
+          AP_PASSWORD: op://pump/wifi/fallback_ap_password
           API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
           OTA_PASSWORD: op://pump/esphome/ota_password
 
@@ -127,7 +127,7 @@ jobs:
           cat > secrets.yaml <<EOF
           wifi_ssid: "${WIFI_SSID}"
           wifi_password: "${WIFI_PASSWORD}"
-          fallback_ap_password: "${FALLBACK_AP_PASSWORD}"
+          ap_password: "${AP_PASSWORD}"
           api_encryption_key: "${API_ENCRYPTION_KEY}"
           ota_password: "${OTA_PASSWORD}"
           EOF
