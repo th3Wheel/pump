@@ -1,0 +1,41 @@
+# .yamllint.yaml
+# yamllint configuration for this repository.
+# Docs: https://yamllint.readthedocs.io/en/stable/configuration.html
+
+extends: default
+
+rules:
+  # ESPHome configs use long lines for substitutions and sensor names
+  line-length:
+    max: 120
+    level: warning
+
+  # ESPHome uses truthy values like "true"/"false" as strings in some places
+  truthy:
+    allowed-values: ["true", "false", "yes", "no", "on", "off"]
+    check-keys: false
+
+  # Allow blank lines at the start of files for readability
+  document-start:
+    present: false
+
+  # Indentation: 2 spaces (ESPHome standard)
+  indentation:
+    spaces: 2
+    indent-sequences: true
+    check-multi-line-strings: false
+
+  # Allow comments
+  comments:
+    min-spaces-from-content: 1
+
+  # Allow empty values (ESPHome uses them for some keys like captive_portal:)
+  empty-values:
+    forbid-in-block-mappings: false
+    forbid-in-flow-mappings: true
+
+ignore: |
+  secrets.yaml
+  .git/
+  .github/
+  node_modules/

@@ -1,0 +1,42 @@
+# packages/common.yaml
+# Shared configuration included by all device configs.
+# Contains: logging, API/OTA, time, status LED, diagnostics.
+
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+logger:
+  level: INFO
+
+time:
+  - platform: homeassistant
+    id: ha_time
+
+sensor:
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 60s
+
+  - platform: uptime
+    name: "Uptime"
+
+text_sensor:
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
+
+  - platform: wifi_info
+    ip_address:
+      name: "IP Address"
+    ssid:
+      name: "Connected SSID"
+
+button:
+  - platform: restart
+    name: "Restart"
+    icon: "mdi:restart"
