@@ -7,16 +7,16 @@ managed through **1Password** and are **never** committed to the repository.
 
 ## 1Password vault layout
 
-Create a vault named **`pump`** in your 1Password account with the following
+Create a vault named **`homelab`** in your 1Password account with the following
 items and fields:
 
-| Item | Field | Description |
-|------|-------|-------------|
-| `wifi` | `ssid` | WiFi network name |
-| `wifi` | `password` | WiFi password |
-| `wifi` | `fallback_ap_password` | Password for the fallback access-point hotspot |
-| `esphome` | `api_encryption_key` | 32-byte base64 ESPHome API encryption key |
-| `esphome` | `ota_password` | Over-the-air update password |
+| Item | Field | ESPHome secret key(s) | Description |
+|------|-------|-----------------------|-------------|
+| `securewifi` | `ssid` | `wifi_ssid` | WiFi network name |
+| `securewifi` | `password` | `wifi_password` | WiFi password |
+| `securewifi` | `fallback_ap_password` | `ap_password`, `fallback_ap_password` | Fallback access-point password |
+| `esphome` | `api_encryption_key` | `api_encryption_key` | 32-byte base64 ESPHome API key |
+| `esphome` | `ota_password` | `ota_password` | Over-the-air update password |
 
 ### Generating an API encryption key
 
