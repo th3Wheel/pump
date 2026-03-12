@@ -37,5 +37,4 @@ rules:
 ignore: |
   secrets.yaml
   .git/
-  .github/
   node_modules/
