@@ -58,33 +58,36 @@ esphome run devices/pump-controller.yaml
 ## CI / GitHub Actions
 
 The CI workflow uses the
-[1password/load-secrets-action](https://github.com/1password/load-secrets-action)
-to inject secrets at runtime — no plaintext values are stored in GitHub.
+[1password/install-cli-action](https://github.com/1password/install-cli-action)
+to install the `op` CLI, then runs `op inject -i secrets.yaml.tpl -o secrets.yaml`
+to generate `secrets.yaml` at runtime — no plaintext values are stored in GitHub.
 
 ### Required GitHub repository secret
 
 | Secret name | Value |
 |---|---|
-| `OP_SERVICE_ACCOUNT_TOKEN` | A 1Password Service Account token with **read** access to the `pump` vault |
+| `OP_SERVICE_ACCOUNT_TOKEN` | A 1Password Service Account token with **read** access to the `homelab` vault |
 
 ### Creating a Service Account
 
 1. Open 1Password → **Developer Tools → Service Accounts**.
 2. Click **New Service Account**, name it `pump-ci`.
-3. Grant it **Read items** on the `pump` vault.
+3. Grant it **Read items** on the `homelab` vault.
 4. Copy the token and add it to **GitHub → Settings → Secrets and variables →
    Actions** as `OP_SERVICE_ACCOUNT_TOKEN`.
 
 ### Secret references in the workflow
 
-Secrets are referenced using the `op://vault/item/field` URI scheme:
+Secrets are referenced via `{{ op://vault/item/field }}` placeholders in
+`secrets.yaml.tpl`. The `op inject` command resolves them at runtime using
+the service account token:
 
 ```
-op://pump/wifi/ssid
-op://pump/wifi/password
-op://pump/wifi/fallback_ap_password
-op://pump/esphome/api_encryption_key
-op://pump/esphome/ota_password
+op://homelab/securewifi/ssid
+op://homelab/securewifi/password
+op://homelab/securewifi/fallback_ap_password
+op://homelab/esphome/api_encryption_key
+op://homelab/esphome/ota_password
 ```
 
 ---

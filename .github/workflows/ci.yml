@@ -63,27 +63,13 @@ jobs:
       - name: Install ESPHome
         run: pip install esphome
 
-      - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v2
-        with:
-          export-env: true
+      - name: Install 1Password CLI
+        uses: 1password/install-cli-action@v1
+
+      - name: Generate secrets.yaml via op inject
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          WIFI_SSID: op://pump/wifi/ssid
-          WIFI_PASSWORD: op://pump/wifi/password
-          FALLBACK_AP_PASSWORD: op://pump/wifi/fallback_ap_password
-          API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
-          OTA_PASSWORD: op://pump/esphome/ota_password
-
-      - name: Generate secrets.yaml from 1Password values
-        run: |
-          cat > secrets.yaml <<EOF
-          wifi_ssid: "${WIFI_SSID}"
-          wifi_password: "${WIFI_PASSWORD}"
-          fallback_ap_password: "${FALLBACK_AP_PASSWORD}"
-          api_encryption_key: "${API_ENCRYPTION_KEY}"
-          ota_password: "${OTA_PASSWORD}"
-          EOF
+        run: op inject -i secrets.yaml.tpl -o secrets.yaml
 
       - name: Validate ESPHome config — ${{ matrix.config }}
         run: esphome config ${{ matrix.config }}
@@ -113,27 +99,13 @@ jobs:
       - name: Install ESPHome
         run: pip install esphome
 
-      - name: Load secrets from 1Password
-        uses: 1password/load-secrets-action@v2
-        with:
-          export-env: true
+      - name: Install 1Password CLI
+        uses: 1password/install-cli-action@v1
+
+      - name: Generate secrets.yaml via op inject
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          WIFI_SSID: op://pump/wifi/ssid
-          WIFI_PASSWORD: op://pump/wifi/password
-          FALLBACK_AP_PASSWORD: op://pump/wifi/fallback_ap_password
-          API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
-          OTA_PASSWORD: op://pump/esphome/ota_password
-
-      - name: Generate secrets.yaml from 1Password values
-        run: |
-          cat > secrets.yaml <<EOF
-          wifi_ssid: "${WIFI_SSID}"
-          wifi_password: "${WIFI_PASSWORD}"
-          fallback_ap_password: "${FALLBACK_AP_PASSWORD}"
-          api_encryption_key: "${API_ENCRYPTION_KEY}"
-          ota_password: "${OTA_PASSWORD}"
-          EOF
+        run: op inject -i secrets.yaml.tpl -o secrets.yaml
 
       - name: Compile ESPHome firmware — ${{ matrix.config }}
         run: esphome compile ${{ matrix.config }}
