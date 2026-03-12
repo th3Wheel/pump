@@ -4,6 +4,8 @@
 pump/
 ├── devices/               # Device-specific ESPHome YAML configs (one file per physical device)
 │   └── pump-controller.yaml
+├── esphome/               # Legacy device configs (preserved in original location)
+│   └── pool_pump.yaml     # Century VGreen pool pump — see docs/POOL_PUMP.md
 ├── packages/              # Reusable config fragments included by device configs
 │   ├── common.yaml        # Logging, API, OTA, diagnostics, uptime sensors
 │   └── wifi.yaml          # WiFi + captive-portal fallback
@@ -14,7 +16,8 @@ pump/
 ├── docs/                  # Project documentation
 │   ├── STRUCTURE.md       # This file
 │   ├── SECRETS.md         # 1Password secrets setup
-│   └── CONTRIBUTING.md    # Contribution guidelines
+│   ├── CONTRIBUTING.md    # Contribution guidelines
+│   └── POOL_PUMP.md       # Century VGreen pool pump hardware & wiring guide
 ├── .devcontainer/
 │   └── devcontainer.json  # GitHub Codespaces / VS Code Dev Container config
 ├── .github/

@@ -72,7 +72,7 @@ to generate `secrets.yaml` at runtime — no plaintext values are stored in GitH
 
 1. Open 1Password → **Developer Tools → Service Accounts**.
 2. Click **New Service Account**, name it `pump-ci`.
-3. Grant it **Read items** on the `homelab` vault.
+3. Grant it read access to the `homelab` vault (select the vault and choose the read-only permission).
 4. Copy the token and add it to **GitHub → Settings → Secrets and variables →
    Actions** as `OP_SERVICE_ACCOUNT_TOKEN`.
 
