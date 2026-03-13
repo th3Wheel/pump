@@ -1,3 +1,4 @@
+<<<<<<< copilot/standardize-repo-layout
 # .gitignore for ESPHome projects
 
 # ── Secrets (NEVER commit) ─────────────────────────────────────────────────────
@@ -31,3 +32,6 @@ Thumbs.db
 
 # ── Logs ──────────────────────────────────────────────────────────────────────
 *.log
+=======
+esphome/secrets.yaml
+>>>>>>> main
