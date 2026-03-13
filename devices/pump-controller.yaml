@@ -1,0 +1,52 @@
+# pump-controller.yaml
+# Example ESPHome configuration for an ESP32-based pump controller.
+# Place device-specific overrides here; shared logic lives in packages/.
+
+substitutions:
+  device_name: pump-controller
+  friendly_name: "Pump Controller"
+  device_description: "Controls and monitors the water pump"
+
+packages:
+  common: !include ../packages/common.yaml
+  wifi: !include ../packages/wifi.yaml
+
+esphome:
+  name: ${device_name}
+  friendly_name: ${friendly_name}
+  comment: ${device_description}
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# ── Device-specific sensors & controls ────────────────────────────────────────
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO34
+      mode: INPUT
+    name: "${friendly_name} Flow Sensor"
+    id: flow_sensor
+    device_class: moisture
+
+sensor:
+  - platform: adc
+    pin: GPIO35
+    name: "${friendly_name} Pressure"
+    id: pressure_sensor
+    unit_of_measurement: "bar"
+    accuracy_decimals: 2
+    update_interval: 5s
+    filters:
+      - multiply: 3.3
+
+switch:
+  - platform: gpio
+    pin: GPIO26
+    name: "${friendly_name} Pump Relay"
+    id: pump_relay
+    restore_mode: RESTORE_DEFAULT_OFF
+    icon: "mdi:water-pump"

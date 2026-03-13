@@ -1,1 +1,37 @@
+<<<<<<< copilot/standardize-repo-layout
+# .gitignore for ESPHome projects
+
+# ── Secrets (NEVER commit) ─────────────────────────────────────────────────────
+secrets.yaml
+
+# ── ESPHome build artifacts ────────────────────────────────────────────────────
+.esphome/
+build/
+*.bin
+*.elf
+*.map
+
+# ── Python / pip ───────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+
+# ── Editor / OS ────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+*.code-workspace
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+=======
 esphome/secrets.yaml
+>>>>>>> main

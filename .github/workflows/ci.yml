@@ -1,0 +1,121 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - "release/**"
+  push:
+    branches:
+      - main
+      - develop
+      - "release/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Job 1: YAML lint ─────────────────────────────────────────────────────────
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint
+        run: yamllint -c .yamllint.yaml .
+
+  # ── Job 2: ESPHome config validation ─────────────────────────────────────────
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - devices/pump-controller.yaml
+          - esphome/pool_pump.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install ESPHome
+        run: pip install esphome
+
+      - name: Install 1Password CLI
+        uses: 1password/install-cli-action@v1
+
+      - name: Generate secrets.yaml via op inject
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        run: op inject -i secrets.yaml.tpl -o secrets.yaml
+
+      - name: Validate ESPHome config — ${{ matrix.config }}
+        run: esphome config ${{ matrix.config }}
+
+  # ── Job 3: ESPHome compile (full firmware build) ──────────────────────────────
+  compile:
+    name: compile
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - devices/pump-controller.yaml
+          - esphome/pool_pump.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install ESPHome
+        run: pip install esphome
+
+      - name: Install 1Password CLI
+        uses: 1password/install-cli-action@v1
+
+      - name: Generate secrets.yaml via op inject
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+        run: op inject -i secrets.yaml.tpl -o secrets.yaml
+
+      - name: Compile ESPHome firmware — ${{ matrix.config }}
+        run: esphome compile ${{ matrix.config }}
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-${{ github.run_number }}
+          path: .esphome/build/*/firmware.bin
+          if-no-files-found: warn
+          retention-days: 7
