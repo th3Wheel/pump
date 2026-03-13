@@ -1,0 +1,6 @@
+# .yamllint.yaml
+rules:
+  indentation: enable
+  trailing-spaces: enable
+  line-length:
+    max: 120
