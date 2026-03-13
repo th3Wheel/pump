@@ -1,0 +1,144 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+      - "release/**"
+  push:
+    branches:
+      - main
+      - develop
+      - "release/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Job 1: YAML lint ─────────────────────────────────────────────────────────
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Run yamllint
+        run: yamllint -c .yamllint.yaml .
+
+  # ── Job 2: ESPHome config validation ─────────────────────────────────────────
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - esphome/pool_pump.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ESPHome
+        run: pip install esphome
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          WIFI_SSID: op://pump/wifi/ssid
+          WIFI_PASSWORD: op://pump/wifi/password
+          AP_PASSWORD: op://pump/wifi/fallback_ap_password
+          API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
+          OTA_PASSWORD: op://pump/esphome/ota_password
+
+      - name: Generate secrets.yaml from 1Password values
+        run: |
+          cat > secrets.yaml <<EOF
+          wifi_ssid: "${WIFI_SSID}"
+          wifi_password: "${WIFI_PASSWORD}"
+          ap_password: "${AP_PASSWORD}"
+          api_encryption_key: "${API_ENCRYPTION_KEY}"
+          ota_password: "${OTA_PASSWORD}"
+          EOF
+
+      - name: Validate ESPHome config — ${{ matrix.config }}
+        run: esphome config ${{ matrix.config }}
+
+  # ── Job 3: ESPHome compile (full firmware build) ──────────────────────────────
+  compile:
+    name: compile
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - esphome/pool_pump.yaml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ESPHome
+        run: pip install esphome
+
+      - name: Load secrets from 1Password
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          WIFI_SSID: op://pump/wifi/ssid
+          WIFI_PASSWORD: op://pump/wifi/password
+          AP_PASSWORD: op://pump/wifi/fallback_ap_password
+          API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
+          OTA_PASSWORD: op://pump/esphome/ota_password
+
+      - name: Generate secrets.yaml from 1Password values
+        run: |
+          cat > secrets.yaml <<EOF
+          wifi_ssid: "${WIFI_SSID}"
+          wifi_password: "${WIFI_PASSWORD}"
+          ap_password: "${AP_PASSWORD}"
+          api_encryption_key: "${API_ENCRYPTION_KEY}"
+          ota_password: "${OTA_PASSWORD}"
+          EOF
+
+      - name: Compile ESPHome firmware — ${{ matrix.config }}
+        run: esphome compile ${{ matrix.config }}
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware-${{ github.run_number }}
+          path: .esphome/build/*/firmware.bin
+          if-no-files-found: warn
+          retention-days: 7
