@@ -1,10 +1,13 @@
 substitutions:
-  device_name: pool-pump
-  friendly_name: "Pool Pump"
+  device_name: pool-pump-controls
+  friendly_name: "PoolPumpControls"
 
 esphome:
   name: ${device_name}
   friendly_name: ${friendly_name}
+  project:
+    name: th3wheel.poolpumpcontrols
+    version: "1.0.0"
 
 esp32:
   board: m5stack-atoms3
