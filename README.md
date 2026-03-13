@@ -1,6 +1,6 @@
-# Century Pool Pump RS485 Interface & Monitoring
+# PoolPumpControls
 
-A low-profile, pump-powered controller that interfaces with a Century VGreen pool pump via Modbus (RS485) and provides real-time filter pressure monitoring. The system integrates into Home Assistant via ESPHome.
+PoolPumpControls is a low-profile, pump-powered controller that interfaces with a Century VGreen pool pump via Modbus (RS485) and provides real-time filter pressure monitoring. The system integrates into Home Assistant via ESPHome.
 
 ---
 
