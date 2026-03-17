@@ -17,7 +17,9 @@
   "license": "ISC",
   "author": "T. N. Wheeler",
   "type": "commonjs",
-  "main": "index.js",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:changed": "eslint . --cache",
@@ -29,6 +31,7 @@
     "@eslint/js": "^10.0.1",
     "@eslint/json": "^1.1.0",
     "@eslint/markdown": "^7.5.1",
+    "@microsoft/eslint-formatter-sarif": "^3.1.0",
     "eslint": "^10.0.3",
     "globals": "^17.4.0",
     "jiti": "^2.6.1",
