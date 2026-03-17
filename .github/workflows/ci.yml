@@ -67,8 +67,8 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          WIFI_SSID: op://pump/wifi/ssid
-          WIFI_PASSWORD: op://pump/wifi/password
+          WIFI_SSID: op://Homelab/wifi/ssid
+          WIFI_PASSWORD: op://Homelab/wifi/password
           AP_PASSWORD: op://pump/wifi/fallback_ap_password
           API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
           OTA_PASSWORD: op://pump/esphome/ota_password
@@ -116,8 +116,8 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          WIFI_SSID: op://pump/wifi/ssid
-          WIFI_PASSWORD: op://pump/wifi/password
+          WIFI_SSID: op://Homelab/wifi/ssid
+          WIFI_PASSWORD: op://Homelab/wifi/password
           AP_PASSWORD: op://pump/wifi/fallback_ap_password
           API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
           OTA_PASSWORD: op://pump/esphome/ota_password
