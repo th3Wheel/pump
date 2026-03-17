@@ -1,3 +1,5 @@
+// Note: This ESLint flat config is stored as `.mts`. Ensure a TS loader (e.g., `jiti`)
+// is installed and available so ESLint can load this file when running `eslint .`.
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
