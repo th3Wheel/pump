@@ -1,5 +1,3 @@
-// Note: This ESLint flat config is stored as `.mts`. Ensure a TS loader (e.g., `jiti`)
-// is installed and available so ESLint can load this file when running `eslint .`.
 import js from "@eslint/js";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -14,9 +12,9 @@ export default [
   ...tseslint.configs.recommended.map(config => ({ ...config, files: codeFiles })),
   { files: codeFiles, languageOptions: { globals: {...globals.browser, ...globals.node} } },
   { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
-  { files: ["**/*.json"], plugins: { json }, language: "json/json", extends: ["json/recommended"] },
-  { files: ["**/*.jsonc"], plugins: { json }, language: "json/jsonc", extends: ["json/recommended"] },
-  { files: ["**/*.json5"], plugins: { json }, language: "json/json5", extends: ["json/recommended"] },
+  { files: ["**/*.json"], language: "json/json", ...json.configs.recommended },
+  { files: ["**/*.jsonc"], language: "json/jsonc", ...json.configs.recommended },
+  { files: ["**/*.json5"], language: "json/json5", ...json.configs.recommended },
   ...markdown.configs.recommended,
-  { files: ["**/*.css"], plugins: { css }, language: "css/css", extends: ["css/recommended"] },
+  { files: ["**/*.css"], language: "css/css", ...css.configs.recommended },
 ];
