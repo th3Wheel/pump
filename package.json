@@ -1,0 +1,36 @@
+{
+  "name": "pump",
+  "version": "0.1.0",
+  "description": "\\",
+  "keywords": [
+    "esphome",
+    "pool"
+  ],
+  "homepage": "https://github.com/th3Wheel/pump#readme",
+  "bugs": {
+    "url": "https://github.com/th3Wheel/pump/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/th3Wheel/pump.git"
+  },
+  "license": "ISC",
+  "author": "T. N. Wheeler",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:changed": "sh -c 'files=$( (git diff --name-only --diff-filter=ACMRTUXB HEAD; git ls-files --others --exclude-standard) | sort -u | grep -E "'"'\\.(js|mjs|cjs|ts|mts|cts|json|jsonc|json5|md|css)$'"'"' || true); if [ -z "$files" ]; then echo "No changed lintable files."; exit 0; fi; eslint $files'",
+    "lint:fix": "eslint . --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@eslint/css": "^1.0.0",
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^1.1.0",
+    "@eslint/markdown": "^7.5.1",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0",
+    "typescript-eslint": "^8.57.1"
+  }
+}
