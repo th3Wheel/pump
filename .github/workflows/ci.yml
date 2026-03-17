@@ -67,11 +67,11 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          WIFI_SSID: op://Homelab/wifi/ssid
-          WIFI_PASSWORD: op://Homelab/wifi/password
-          AP_PASSWORD: op://pump/wifi/fallback_ap_password
-          API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
-          OTA_PASSWORD: op://pump/esphome/ota_password
+          WIFI_SSID: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_WIFI }}/ssid
+          WIFI_PASSWORD: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_WIFI }}/password
+          AP_PASSWORD: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_WIFI }}/fallback_ap_password
+          API_ENCRYPTION_KEY: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_FRAMEWORK }}/api_encryption_key
+          OTA_PASSWORD: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_FRAMEWORK }}/ota_password
 
       - name: Generate secrets.yaml from 1Password values
         run: |
@@ -116,11 +116,11 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          WIFI_SSID: op://Homelab/wifi/ssid
-          WIFI_PASSWORD: op://Homelab/wifi/password
-          AP_PASSWORD: op://pump/wifi/fallback_ap_password
-          API_ENCRYPTION_KEY: op://pump/esphome/api_encryption_key
-          OTA_PASSWORD: op://pump/esphome/ota_password
+          WIFI_SSID: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_WIFI }}/ssid
+          WIFI_PASSWORD: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_WIFI }}/password
+          AP_PASSWORD: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_WIFI }}/fallback_ap_password
+          API_ENCRYPTION_KEY: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_FRAMEWORK }}/api_encryption_key
+          OTA_PASSWORD: ${{ secrets.OP_CONNECT_PATH }}/${{ secrets.OP_CONNECT_FRAMEWORK }}/ota_password
 
       - name: Generate secrets.yaml from 1Password values
         run: |
