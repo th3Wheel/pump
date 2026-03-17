@@ -1,7 +1,7 @@
 {
   "name": "pump",
   "version": "0.1.0",
-  "description": "",
+  "description": "ESPHome pool pump controller – lint tooling",
   "keywords": [
     "esphome",
     "pool"
@@ -16,8 +16,10 @@
   },
   "license": "ISC",
   "author": "T. N. Wheeler",
-  "type": "commonjs",
-  "main": "index.js",
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24"
+  },
   "scripts": {
     "lint": "eslint .",
     "lint:changed": "eslint . --cache",
