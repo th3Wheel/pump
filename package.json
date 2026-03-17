@@ -20,7 +20,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "lint:changed": "sh -c 'files=$( (git diff --name-only --diff-filter=ACMRTUXB HEAD; git ls-files --others --exclude-standard) | sort -u | grep -E "'"'\\.(js|mjs|cjs|ts|mts|cts|json|jsonc|json5|md|css)$'"'"' || true); if [ -z "$files" ]; then echo "No changed lintable files."; exit 0; fi; eslint $files'",
+    "lint:changed": "eslint . --cache",
     "lint:fix": "eslint . --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
