@@ -1,7 +1,7 @@
 {
   "name": "pump",
   "version": "0.1.0",
-  "description": "",
+  "description": "ESPHome pool pump controller – lint tooling",
   "keywords": [
     "esphome",
     "pool"
@@ -16,7 +16,7 @@
   },
   "license": "ISC",
   "author": "T. N. Wheeler",
-  "type": "commonjs",
+  "type": "commonjs",https://github.com/th3Wheel/pump/pull/13/conflict?name=eslint.config.mjs&base_oid=8d16e6c3e22f8c4c623ef0ed02937bdac3b68769&head_oid=572ef215e4c8eaeccb68efc43bc7d471cf4a440d
   "engines": {
     "node": "^20.19.0 || ^22.13.0 || >=24"
   },
