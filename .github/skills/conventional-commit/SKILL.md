@@ -17,13 +17,21 @@ description: 'Prompt and workflow for generating conventional commit messages us
 2. Run `git diff` or `git diff --cached` to inspect changes.
 3. Stage your changes with `git add <file>`.
 4. Construct your commit message using the following XML structure.
+<<<<<<< copilot/sub-pr-10
 5. Review the generated commit message, then run the command yourself:
+=======
+5. Copy the generated commit command and run it manually in your terminal:
+>>>>>>> th3Wheel-patch-1
 
 ```bash
 git commit -m "type(scope): description"
 ```
 
+<<<<<<< copilot/sub-pr-10
 6. Confirm the commit looks correct with `git log --oneline -1`.
+=======
+6. Review the commit message before executing to ensure it accurately describes your changes.
+>>>>>>> th3Wheel-patch-1
 
 ### Commit Message Structure
 
