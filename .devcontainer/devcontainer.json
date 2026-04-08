@@ -1,0 +1,42 @@
+{
+  "name": "ESPHome Development",
+  "image": "ghcr.io/esphome/esphome:stable",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers-extra/features/1password-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esphome.esphome-vscode",
+        "redhat.vscode-yaml",
+        "ms-python.python",
+        "streetsidesoftware.code-spell-checker",
+        "github.vscode-github-actions"
+      ],
+      "settings": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.formatOnSave": true,
+        "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml"
+        }
+      }
+    }
+  },
+  "postCreateCommand": "pip install yamllint && echo '✅ ESPHome dev container ready. Run: op inject -i secrets.yaml.tpl -o secrets.yaml && esphome dashboard .'",
+  "forwardPorts": [6052],
+  "portsAttributes": {
+    "6052": {
+      "label": "ESPHome Dashboard",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "remoteUser": "root"
+}
