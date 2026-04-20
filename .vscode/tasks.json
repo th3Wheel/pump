@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Auto Lint",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint"],
+      "group": "test",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Auto Lint Fix",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint:fix"],
+      "group": "test",
+      "problemMatcher": ["$eslint-stylish"]
+    },
+    {
+      "label": "Auto Lint Changed Files",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint:changed"],
+      "group": "test",
+      "problemMatcher": ["$eslint-stylish"]
+    }
+  ]
+}
